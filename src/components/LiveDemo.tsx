@@ -65,11 +65,45 @@ function VoiceChat() {
   const chatRef = useRef<HTMLDivElement>(null);
   const mediaRecorderRef = useRef<MediaRecorder|null>(null);
   const chunksRef = useRef<Blob[]>([]);
-  const audioRef = useRef<HTMLAudioElement|null>(null);
+
+  const speakReply = useCallback((text: string, lang: string) => {
+    if (typeof window === "undefined" || !window.speechSynthesis) return;
+    window.speechSynthesis.cancel();
+    const utt = new SpeechSynthesisUtterance(text);
+    utt.lang = lang === "ar" ? "ar-SA" : "en-US";
+    utt.rate = 1.05;
+    utt.onend = () => setState("idle");
+    window.speechSynthesis.speak(utt);
+  }, []);
 
   useEffect(() => {
     if (chatRef.current) chatRef.current.scrollTop = chatRef.current.scrollHeight;
   }, [messages]);
+
+  const sendToAI = useCallback(async (audioBlob: Blob) => {
+    const formData = new FormData();
+    formData.append("audio", audioBlob, "recording.webm");
+    formData.append("lang", lang);
+    try {
+      const res = await fetch("/api/voice", { method:"POST", body:formData });
+      if (!res.ok) {
+        const err = await res.json().catch(()=>({error:"Request failed"}));
+        throw new Error(err.error || "Request failed");
+      }
+      const data = await res.json();
+      setMessages(prev => [
+        ...prev,
+        { role:"user", text:data.transcript },
+        { role:"ai",   text:data.reply },
+      ]);
+      setState("responding");
+      speakReply(data.reply, lang);
+    } catch (e: unknown) {
+      const msg = e instanceof Error ? e.message : "Something went wrong.";
+      setError(msg);
+      setState("idle");
+    }
+  }, [lang, speakReply]);
 
   const startRecording = useCallback(async () => {
     setError(null);
@@ -91,44 +125,11 @@ function VoiceChat() {
       setError(lang === "en" ? "Microphone access denied." : "تم رفض الوصول إلى الميكروفون.");
       setState("idle");
     }
-  }, [lang]);
+  }, [lang, sendToAI]);
 
   const stopRecording = useCallback(() => {
     mediaRecorderRef.current?.stop();
   }, []);
-
-  const sendToAI = async (audioBlob: Blob) => {
-    const formData = new FormData();
-    formData.append("audio", audioBlob, "recording.webm");
-    formData.append("lang", lang);
-    try {
-      const res = await fetch("/api/voice", { method:"POST", body:formData });
-      if (!res.ok) {
-        const err = await res.json().catch(()=>({error:"Request failed"}));
-        throw new Error(err.error || "Request failed");
-      }
-      const data = await res.json();
-      setMessages(prev => [
-        ...prev,
-        { role:"user", text:data.transcript },
-        { role:"ai",   text:data.reply },
-      ]);
-      setState("responding");
-      // Play TTS audio
-      if (data.audioBase64) {
-        const audio = new Audio(`data:audio/mp3;base64,${data.audioBase64}`);
-        audioRef.current = audio;
-        audio.onended = () => setState("idle");
-        audio.play();
-      } else {
-        setState("idle");
-      }
-    } catch (e: unknown) {
-      const msg = e instanceof Error ? e.message : "Something went wrong.";
-      setError(msg);
-      setState("idle");
-    }
-  };
 
   const handleMicClick = () => {
     if (state === "idle") startRecording();
