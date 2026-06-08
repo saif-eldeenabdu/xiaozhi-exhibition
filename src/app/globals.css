@@ -19,16 +19,18 @@ body {
   background-attachment: fixed;
   background-color: #06060e;
   background-image:
-    /* base diagonal gradient */
-    linear-gradient(135deg, #06060e 0%, #0d0820 35%, #060e18 65%, #06060e 100%),
-    /* cyan top-center bloom */
-    radial-gradient(ellipse 90% 50% at 50% -5%, rgba(0,245,255,0.13) 0%, transparent 65%),
-    /* violet mid-right bloom */
-    radial-gradient(ellipse 70% 40% at 90% 55%, rgba(162,89,255,0.10) 0%, transparent 60%),
+    /* base diagonal gradient — deeper purple/teal shift */
+    linear-gradient(135deg, #04030f 0%, #120828 30%, #041220 60%, #080418 100%),
+    /* cyan top-center bloom — strong */
+    radial-gradient(ellipse 100% 55% at 50% -10%, rgba(0,245,255,0.28) 0%, transparent 65%),
+    /* violet right bloom — vivid */
+    radial-gradient(ellipse 75% 50% at 105% 50%, rgba(162,89,255,0.30) 0%, transparent 60%),
     /* cyan bottom-left bloom */
-    radial-gradient(ellipse 60% 35% at 5% 95%, rgba(0,245,255,0.08) 0%, transparent 55%),
-    /* violet center deep glow */
-    radial-gradient(ellipse 100% 60% at 50% 50%, rgba(100,40,180,0.07) 0%, transparent 70%);
+    radial-gradient(ellipse 65% 40% at -5% 100%, rgba(0,245,255,0.22) 0%, transparent 55%),
+    /* violet center pulse */
+    radial-gradient(ellipse 110% 70% at 50% 55%, rgba(120,40,220,0.18) 0%, transparent 70%),
+    /* teal bottom-right accent */
+    radial-gradient(ellipse 50% 35% at 95% 95%, rgba(0,200,220,0.15) 0%, transparent 55%);
   background-blend-mode: normal;
 }
 
