@@ -14,14 +14,22 @@
 html { scroll-behavior: smooth; }
 
 body {
-  background-color: var(--bg);
   position: relative;
   overflow-x: hidden;
-  background-image:
-    radial-gradient(ellipse 80% 40% at 50% 0%, rgba(0,245,255,0.07) 0%, transparent 60%),
-    radial-gradient(ellipse 60% 30% at 80% 60%, rgba(162,89,255,0.06) 0%, transparent 55%),
-    radial-gradient(ellipse 50% 25% at 10% 80%, rgba(0,245,255,0.04) 0%, transparent 50%);
   background-attachment: fixed;
+  background-color: #06060e;
+  background-image:
+    /* base diagonal gradient */
+    linear-gradient(135deg, #06060e 0%, #0d0820 35%, #060e18 65%, #06060e 100%),
+    /* cyan top-center bloom */
+    radial-gradient(ellipse 90% 50% at 50% -5%, rgba(0,245,255,0.13) 0%, transparent 65%),
+    /* violet mid-right bloom */
+    radial-gradient(ellipse 70% 40% at 90% 55%, rgba(162,89,255,0.10) 0%, transparent 60%),
+    /* cyan bottom-left bloom */
+    radial-gradient(ellipse 60% 35% at 5% 95%, rgba(0,245,255,0.08) 0%, transparent 55%),
+    /* violet center deep glow */
+    radial-gradient(ellipse 100% 60% at 50% 50%, rgba(100,40,180,0.07) 0%, transparent 70%);
+  background-blend-mode: normal;
 }
 
 /* Noise overlay */
