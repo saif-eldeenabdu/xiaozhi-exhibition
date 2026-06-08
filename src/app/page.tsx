@@ -10,6 +10,7 @@ import { HowItWorks } from "@/components/HowItWorks";
 import { LiveDemo } from "@/components/LiveDemo";
 import { AboutBuilder } from "@/components/AboutBuilder";
 import { Footer } from "@/components/Footer";
+import { Background } from "@/components/Background";
 
 function ScrollReveal() {
   useEffect(() => {
@@ -40,6 +41,7 @@ function ScrollReveal() {
 export default function Page() {
   return (
     <LanguageProvider>
+      <Background />
       <ScrollReveal />
       <Navbar />
       <main>
